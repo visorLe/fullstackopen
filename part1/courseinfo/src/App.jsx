@@ -5,9 +5,17 @@ const Header = (props) => {
 const Content = (props) => {
   return (
     <div>
-      <p>{props.parts[0].part} {props.parts[0].exercises}</p>
-      <p>{props.parts[1].part} {props.parts[1].exercises}</p>
-      <p>{props.parts[2].part} {props.parts[2].exercises}</p>
+      <Part name={props.parts[0].partname} exercises={props.parts[0].exercises} />
+      <Part name={props.parts[1].partname} exercises={props.parts[1].exercises} />
+      <Part name={props.parts[2].partname} exercises={props.parts[2].exercises} />
+    </div>
+  )
+}
+
+const Part = (props) => {
+  return (
+    <div>
+      <p>{props.name} {props.exercises}</p>
     </div>
   )
 }
@@ -25,15 +33,15 @@ const App = () => {
   const course = 'Half Stack application development'
   const parts = [
     {
-      part: 'Fundamentals of React',
+      partname: 'Fundamentals of React',
       exercises: 10
     },
     {
-      part: 'Using props to pass data',
+      partname: 'Using props to pass data',
       exercises: 7
     },
     {
-      part: 'State of a component',
+      partname: 'State of a component',
       exercises: 14
     }
   ]
@@ -48,3 +56,4 @@ const App = () => {
 }
 
 export default App
+
