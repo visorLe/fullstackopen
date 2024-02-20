@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/notes/new_note
+    note right of browser: Browser sends new note to server
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    note right of browser: Browser redirects back to the page with notes (reloads it)
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes/main.css
+    activate server
+    server-->>browser: CSS file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes/main.js
+    activate server
+    server-->>browser: JavaScript file
+    deactivate server
+    note right of browser: Browser executes JS script that fetches JSON file from server
+    
+    
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes/data.json
+    activate server
+    server-->>browser: JSON-formatted data
+    deactivate server
+    note right of browser: Browser executes the callback function that renders the notes

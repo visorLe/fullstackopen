@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    note right of browser: Browser adds new note to the notes list and redraws it
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    note right of browser: Browser sends new note to the server
+    server-->>browser: 201 Created
+    deactivate server
+    note left of server: Server saves the note and returns success status response code 
