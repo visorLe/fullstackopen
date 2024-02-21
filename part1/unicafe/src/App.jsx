@@ -46,7 +46,14 @@ const ButtonSection = ({ clickHandlers }) => {
   )
 }
 
-const StatisticLine = ({ text, value }) => <>{text} {value}<br /></>
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  )
+}
 
 const Statistics = ({ data }) => {
   const [amountPerFeedback, totalFeedbackAmount] = data
@@ -95,15 +102,17 @@ const Statistics = ({ data }) => {
   ]
 
   return (
-    <div>
-      {lines.map((line, index) => (
-        <StatisticLine
-          key={index}
-          text={line.text}
-          value={line.value}
-        />
-      ))}
-    </div>
+    <table>
+      <tbody>
+        {lines.map((line, index) => (
+          <StatisticLine
+            key={index}
+            text={line.text}
+            value={line.value}
+          />
+        ))}
+      </tbody>
+    </table>
   )
 }
 
