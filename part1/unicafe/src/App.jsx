@@ -2,75 +2,23 @@ import { useState } from 'react'
 
 const calculateAverageFeedback =
   (totalFeedbackAmount, amountPerFeedback) => {
-    const amountGood = amountPerFeedback[0]
-    const amountBad = amountPerFeedback[2]
+    const good = amountPerFeedback[0]
+    const bad = amountPerFeedback[2]
 
-    const score = -1 * amountBad + amountGood
+    const score = -1 * bad + good
 
     return (score / totalFeedbackAmount)
   }
 
-const calculatePercentOfPositiveFeedbacks =
+const calculatePercentOfPositiveFeedback =
   (totalFeedbackAmount, amountGood) => amountGood / totalFeedbackAmount * 100
 
 const Button = ({ text, clickHandler }) =>
   <button onClick={clickHandler}>{text}</button>
 
-const ButtonSection = ({ buttons }) => {
-  return (
-    <div>
-      {buttons.map((button, index) => (
-        <Button
-          key={index}
-          text={button.text}
-          clickHandler={button.clickHandler}
-        />
-      ))}
-    </div>
-  )
-}
-
-const StatisticsEntry = ({ text, value }) => <>{text} {value}<br /></>
-
-const StatisticsSection = ({ entries }) => {
-  return (
-    <div>
-      {entries.map((entry, index) => (
-        <StatisticsEntry
-          key={index}
-          text={entry.text}
-          value={entry.value}
-        />
-      ))}
-    </div>
-  )
-}
-
-const App = () => {
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-
-  const increaseGoodCounter = () => setGood(good + 1)
-  const increaseNeutralCounter = () => setNeutral(neutral + 1)
-  const increaseBadCounter = () => setBad(bad + 1)
-
-  const amountPerFeedback = [good, neutral, bad]
-  const totalFeedbackAmount = amountPerFeedback.reduce(
-    (accumulator, currentValue) => accumulator + currentValue
-  )
-
-  let averageFeedback = 0
-  let percentOfPositiveFeedback = 0
-  
-  if (totalFeedbackAmount > 0) {
-    averageFeedback =
-      calculateAverageFeedback(totalFeedbackAmount, amountPerFeedback)
-
-    percentOfPositiveFeedback =
-      calculatePercentOfPositiveFeedbacks(totalFeedbackAmount, good)
-  }
-
+const ButtonSection = ({ clickHandlers }) => {
+  const [increaseGoodCounter, increaseNeutralCounter, increaseBadCounter] =
+    clickHandlers
   const buttons = [
     {
       text: "good",
@@ -85,8 +33,41 @@ const App = () => {
       clickHandler: increaseBadCounter
     }
   ]
+  return (
+    <div>
+      {buttons.map((button, index) => (
+        <Button
+          key={index}
+          text={button.text}
+          clickHandler={button.clickHandler}
+        />
+      ))}
+    </div>
+  )
+}
 
-  const statiscticsEntries = [
+const StatisticLine = ({ text, value }) => <>{text} {value}<br /></>
+
+const Statistics = ({ data }) => {
+  const [amountPerFeedback, totalFeedbackAmount] = data
+
+  if (totalFeedbackAmount === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
+
+  const [good, neutral, bad] = amountPerFeedback
+
+  const averageFeedback =
+    calculateAverageFeedback(totalFeedbackAmount, amountPerFeedback)
+
+  const percentOfPositiveFeedback =
+    calculatePercentOfPositiveFeedback(totalFeedbackAmount, good)
+
+  const lines = [
     {
       text: "good",
       value: good
@@ -115,11 +96,41 @@ const App = () => {
 
   return (
     <div>
+      {lines.map((line, index) => (
+        <StatisticLine
+          key={index}
+          text={line.text}
+          value={line.value}
+        />
+      ))}
+    </div>
+  )
+}
+
+const App = () => {
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  const increaseGoodCounter = () => setGood(good + 1)
+  const increaseNeutralCounter = () => setNeutral(neutral + 1)
+  const increaseBadCounter = () => setBad(bad + 1)
+  const buttonClickHandlers =
+    [increaseGoodCounter, increaseNeutralCounter, increaseBadCounter]
+
+  const amountPerFeedback = [good, neutral, bad]
+  const totalFeedbackAmount = amountPerFeedback.reduce(
+    (accumulator, currentValue) => accumulator + currentValue
+  )
+  const statisticsData = [amountPerFeedback, totalFeedbackAmount]
+
+  return (
+    <div>
       <h1>give feedback</h1>
-      <ButtonSection buttons={buttons} />
+      <ButtonSection clickHandlers={buttonClickHandlers} />
 
       <h1>statistics</h1>
-      <StatisticsSection entries={statiscticsEntries} />
+      <Statistics data={statisticsData} />
     </div>
   )
 }
