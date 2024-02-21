@@ -1,31 +1,47 @@
 import { useState } from 'react'
 
+const calculateAverageFeedback =
+  (totalFeedbackAmount, amountPerFeedback) => {
+    const amountGood = amountPerFeedback[0]
+    const amountBad = amountPerFeedback[2]
+
+    const score = -1 * amountBad + amountGood
+
+    return (score / totalFeedbackAmount)
+  }
+
+const calculatePercentOfPositiveFeedbacks =
+  (totalFeedbackAmount, amountGood) => amountGood / totalFeedbackAmount * 100
+
 const Button = ({ text, clickHandler }) =>
   <button onClick={clickHandler}>{text}</button>
 
 const ButtonSection = ({ buttons }) => {
-  const [good, neutral, bad] = buttons
-
   return (
     <div>
-      <Button text={good.text} clickHandler={good.clickHandler} />
-      <Button text={neutral.text} clickHandler={neutral.clickHandler} />
-      <Button text={bad.text} clickHandler={bad.clickHandler} />
+      {buttons.map((button, index) => (
+        <Button
+          key={index}
+          text={button.text}
+          clickHandler={button.clickHandler}
+        />
+      ))}
     </div>
   )
 }
 
-const StatisticsEntry = ({ text, amount }) =>
-  <>{text} {amount}<br/></>
+const StatisticsEntry = ({ text, value }) => <>{text} {value}<br /></>
 
 const StatisticsSection = ({ entries }) => {
-  const [good, neutral, bad] = entries
-
   return (
     <div>
-      <StatisticsEntry text={good.text} amount={good.amount} />
-      <StatisticsEntry text={neutral.text} amount={neutral.amount} />
-      <StatisticsEntry text={bad.text} amount={bad.amount} />
+      {entries.map((entry, index) => (
+        <StatisticsEntry
+          key={index}
+          text={entry.text}
+          value={entry.value}
+        />
+      ))}
     </div>
   )
 }
@@ -35,36 +51,65 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const increaseCounter = (counterFunction, counterValue) =>
-    () => counterFunction(counterValue + 1)
+  const increaseGoodCounter = () => setGood(good + 1)
+  const increaseNeutralCounter = () => setNeutral(neutral + 1)
+  const increaseBadCounter = () => setBad(bad + 1)
+
+  const amountPerFeedback = [good, neutral, bad]
+  const totalFeedbackAmount = amountPerFeedback.reduce(
+    (accumulator, currentValue) => accumulator + currentValue
+  )
+
+  let averageFeedback = 0
+  let percentOfPositiveFeedback = 0
+  
+  if (totalFeedbackAmount > 0) {
+    averageFeedback =
+      calculateAverageFeedback(totalFeedbackAmount, amountPerFeedback)
+
+    percentOfPositiveFeedback =
+      calculatePercentOfPositiveFeedbacks(totalFeedbackAmount, good)
+  }
 
   const buttons = [
     {
       text: "good",
-      clickHandler: increaseCounter(setGood, good)
+      clickHandler: increaseGoodCounter
     },
     {
       text: "neutral",
-      clickHandler: increaseCounter(setNeutral, neutral)
+      clickHandler: increaseNeutralCounter
     },
     {
       text: "bad",
-      clickHandler: increaseCounter(setBad, bad)
+      clickHandler: increaseBadCounter
     }
   ]
 
   const statiscticsEntries = [
     {
       text: "good",
-      amount: good
+      value: good
     },
     {
       text: "neutral",
-      amount: neutral
+      value: neutral
     },
     {
       text: "bad",
-      amount: bad
+      value: bad
+    },
+    {
+      text: "all",
+      value: totalFeedbackAmount
+    },
+    {
+      text: "average",
+      value: averageFeedback
+    },
+    {
+      text: "positive",
+      value: percentOfPositiveFeedback + " %"
     }
   ]
 
