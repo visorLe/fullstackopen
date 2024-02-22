@@ -5,6 +5,8 @@ const getRandomIntToMax = (max) => Math.floor(Math.random() * max)
 const Button = ({ text, clickHandler }) =>
   <button onClick={clickHandler}>{text}</button>
 
+const Votes = ({ points: votes }) => <p>has {votes} points</p>
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -18,6 +20,7 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
   const getRandomAnecdote = () => {
     let number = getRandomIntToMax(anecdotes.length)
@@ -32,12 +35,27 @@ const App = () => {
     setSelected(number)
   }
 
+  const voteAnecdote = () => {
+    const votesCopy = [...votes]
+    votesCopy[selected] += 1
+
+    console.log("Voted for anecdote:", selected,
+      "\nPoints:", votesCopy[selected]);
+
+    setVotes(votesCopy)
+  }
+
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <Votes points={votes[selected]} />
       <Button
         text="Next anecdote"
         clickHandler={getRandomAnecdote}
+      />
+      <Button
+        text="Vote"
+        clickHandler={voteAnecdote}
       />
     </div>
   )
