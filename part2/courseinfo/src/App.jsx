@@ -1,16 +1,4 @@
-const Part = ({ part }) =>
-  <p>{part.name} {part.exercises}</p>
-
-const Course = ({ course }) => {
-  return (
-    <div>
-      <h1>{course.name}</h1>
-      {course.parts.map(part =>
-        <Part key={part.id} part={part} />
-      )}
-    </div>
-  )
-}
+import Course from "./components/Course"
 
 const App = () => {
   const course = {
@@ -31,6 +19,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
